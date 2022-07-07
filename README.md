@@ -1,9 +1,7 @@
 
 # TempAP
 
-<center>
 ![logo](logo.png)
-</center>
 
 ## What is this script?
 
