@@ -1,11 +1,12 @@
 
-# Temp-AP Manual
-
+<center>
+# TempAP
 ![logo](logo.png)
+</center>
 
 ## What is this script?
 
-This python script is simply a wrapper for Berate-AP, a program designed to deploy rouge wireless access points. The original use case for this script was to be able to access portable Linux computers (like a laptop) over a cell phone on SSH, but there is many other use cases for this, for example, an on-the-fly wireless repeater.
+This python script is simply a wrapper for [Berate-AP](https://github.com/sensepost/berate_ap), a tool designed to deploy rouge wireless access points. The original use case for this script was to be able to access portable Linux computers (like a laptop) over a cell phone via SSH temporarily, but there is other use cases for this, for example, an on-the-fly wireless repeater.
 
 ## Setup:
 
@@ -33,7 +34,7 @@ The following is a list of possible configuration parameters that can be used:
   - **macAddress (String):** MAC address for the wireless access point to broadcast. 
   - **noVirt (Boolean):** *"Do not create virtual interface"*. This can help if there is interface issues when starting the access point.
 
-**Example config.json file:**
+**<u>Example config.json file:</u>**
 
 ```json
 {
@@ -43,7 +44,7 @@ The following is a list of possible configuration parameters that can be used:
 }
 ````
 
-If you are not able to construct your own configuration file then run the command in step 2 of the setup section. 
+If you are not able to construct your own configuration file then run the command in step 3 of the Setup section. 
 
 ## License:
 
