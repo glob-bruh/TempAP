@@ -14,7 +14,7 @@ print("""
   ▒  ▒▒▒ ▒   ▒ ▒   ▒ ▒ ▒          ████████████████████ 
   zzzzzzzzzzzzzzzzzzzzzzzz       ██████████████████████
 
-Berate-AP Wrapper For Remote SSH Over WiFi.
+Linux-Router Wrapper For Remote SSH Over WiFi.
 """)
 
 if len(sys.argv) >= 2:
@@ -40,11 +40,23 @@ if argVariable == "setup":
 SETUP:
 ======
 
-This wizard will generate a config.json file for you based off what you enter.
+This wizard will prepare the script for use and
+generate a config.json file for you based off what you enter.
 Please answer the questions below:
 
 ---
 """)
+    askForScriptDown = input("Would you like to download the Linux-router script? [N/y]: ")
+    if askForScriptDown == "y" or askForScriptDown == "Y":
+        print(f"\n")
+        os.system("wget https://raw.githubusercontent.com/garywill/linux-router/master/lnxrouter && chmod +x lnxrouter")
+        askForScriptDep = input(f"\n---\n\nWould you like to also install its dependencies through APT? [N/y]: ")
+        if askForScriptDep == "y" or askForScriptDep == "Y":
+            print(f"\n")
+            listOfDeps = ["procps", "dnsmasq", "iptables", "hostapd", "iw", "haveged"]
+            for name in listOfDeps:
+                os.system(f"apt install {name} -y")
+    print(f"\n---\n")
     os.system("ip a | grep ': '")
     wifiInterface = input(f"\nThe name of the interface you will be hosting the AP from: ")
     print(f"""
