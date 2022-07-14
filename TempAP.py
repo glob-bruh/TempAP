@@ -17,6 +17,13 @@ print("""
 Linux-Router Wrapper For Remote SSH Over WiFi.
 """)
 
+def jsonConfigLoad():
+    with open('config.json', 'r') as configFile:
+        try:
+            return json.load(configFile)
+        except:
+            exit("[!] WARNING: Malformed config file. Check config.json. Exiting.")
+
 if len(sys.argv) >= 2:
     argVariable = sys.argv[1]
 else:
@@ -27,13 +34,28 @@ if argVariable == "help":
 HELP:
 =====
 
-Usage: sudo python3 ./TempAP.py [argument]
+Usage: sudo python3 TempAP.py [argument]
 
-(no argument) - Run script normally. 
+(no argument) - Run script normally and start AP. 
+         stop - Stop the AP. 
         setup - Run setup wizard.
          help - Show this menu.
 """)
     exit()
+
+if os.geteuid() != 0:
+    exit("[!] WARNING: You need to run this script as root. Exiting.")
+
+if argVariable == "stop":
+    if os.path.exists("/tmp/TempAPrunning"):
+        print("[*] Check config...")
+        configJson = jsonConfigLoad()
+        print("[*] Stopping the AP...")
+        os.system(f"./lnxrouter --stop {configJson.get('wifiInterface')}")
+        os.remove("/tmp/TempAPrunning") 
+        exit("[*] AP has been stopped!")
+    else:
+        exit("[!] AP is not running. Exiting.")
 
 if argVariable == "setup":
     print(f"""======
@@ -49,7 +71,7 @@ Please answer the questions below:
     askForScriptDown = input("Would you like to download the Linux-router script? [N/y]: ")
     if askForScriptDown == "y" or askForScriptDown == "Y":
         print(f"\n")
-        os.system("wget https://raw.githubusercontent.com/garywill/linux-router/master/lnxrouter && chmod +x lnxrouter")
+        os.system("curl https://raw.githubusercontent.com/garywill/linux-router/master/lnxrouter > lnxrouter && chmod +x lnxrouter")
         askForScriptDep = input(f"\n---\n\nWould you like to also install its dependencies through APT? [N/y]: ")
         if askForScriptDep == "y" or askForScriptDep == "Y":
             print(f"\n")
@@ -89,16 +111,10 @@ If you wish, you can avoid using randomized values by adding your own parameters
     print(f"\nDone! Re-run this script as root without the 'setup' argument.")
     exit()
 
-if os.geteuid() != 0:
-    exit("[!] WARNING: You need to run this script as root. Exiting.")
 if os.path.isfile('config.json') == False:
     exit("[!] WARNING: No config.json file found. Try running with the 'setup' argument to create one. Exiting.")
 
-with open('config.json', 'r') as configFile:
-    try:
-        configJson = json.load(configFile)
-    except:
-        exit("[!] WARNING: Malformed config file. Check config.json. Exiting.")
+configJson = jsonConfigLoad()
 print("[*] config.json loaded.")
 
 print("[*] Parse JSON...")
@@ -158,17 +174,18 @@ else:
     print("RELAY MODE: Disabled")
 
 print("""=========================
-! PRESS CTRL+C TO STOP THE AP !
 """)
 
-print("Berate_AP Output:")
 if relayMode == True:
     if noVirt  == True:
-        os.system(f"berate_ap {wifiInterface} {relayInterface} --no-virt --mac {macAddress} -g {gatewayIP} -w 2 {wifiName} {apPass}")
+        os.system(f"./lnxrouter --daemon -w 2 -p {apPass} --ap {wifiInterface} {wifiName}")
     else:
-        os.system(f"berate_ap {wifiInterface} {relayInterface} --mac {macAddress} -g {gatewayIP} -w 2 {wifiInterface} {wifiName} {relayInterface} {apPass}")
+        os.system(f"./lnxrouter --daemon -w 2 -p {apPass} --ap {wifiInterface} {wifiName}")
 else:
     if noVirt  == True:
-        os.system(f"berate_ap -m none --no-virt --mac {macAddress} -g {gatewayIP} -w 2 {wifiInterface} {wifiName} {apPass}")
+        os.system(f"./lnxrouter --daemon -w 2 -p {apPass} --ap {wifiInterface} {wifiName}")
     else:
-        os.system(f"berate_ap -m none --mac {macAddress} -g {gatewayIP} -w 2 {wifiInterface} {wifiName} {apPass}")
+        os.system(f"./lnxrouter --daemon -w 2 -p {apPass} --ap {wifiInterface} {wifiName}")
+
+os.system("touch /tmp/TempAPrunning")
+print(f"\n[*] TO STOP THE AP: Run the script again with the 'stop' argument.")
