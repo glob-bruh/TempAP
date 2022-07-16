@@ -48,14 +48,14 @@ if os.geteuid() != 0:
 
 if argVariable == "stop":
     if os.path.exists("/tmp/TempAPrunning"):
-        print("[*] Check config...")
+        print("[*] Check and load config.json...")
         configJson = jsonConfigLoad()
         print("[*] Stopping the AP...")
         os.system(f"./lnxrouter --stop {configJson.get('wifiInterface')}")
         os.remove("/tmp/TempAPrunning") 
         exit("[*] AP has been stopped!")
     else:
-        exit("[!] AP is not running. Exiting.")
+        exit("[!] AP is not running. Exiting...")
 
 if argVariable == "setup":
     print(f"""======
@@ -111,6 +111,10 @@ If you wish, you can avoid using randomized values by adding your own parameters
     print(f"\nDone! Re-run this script as root without the 'setup' argument.")
     exit()
 
+if os.path.exists("/tmp/TempAPrunning"):
+    exit("[!] The AP is already running. Exiting...")
+
+print("[*] Check and load config.json...")
 if os.path.isfile('config.json') == False:
     exit("[!] WARNING: No config.json file found. Try running with the 'setup' argument to create one. Exiting.")
 
@@ -151,8 +155,8 @@ gatewayIP = configJson['gatewayIP']
 macAddress = configJson['macAddress']
 noVirt = configJson['noVirt']
 
-print(f"[*] Enable SSH service...")
-os.system("service ssh start ; service ssh status | head -3")
+print(f"\n[*] Enable SSH service...")
+os.system("service ssh start ; service ssh status | head -n 3")
 
 print(f"\n[*] Start AP...")
 print(f"""
@@ -173,19 +177,18 @@ if relayMode == True:
 else:
     print("RELAY MODE: Disabled")
 
-print("""=========================
-""")
+print("=========================\n")
 
 if relayMode == True:
     if noVirt  == True:
-        os.system(f"./lnxrouter --daemon -w 2 -p {apPass} --ap {wifiInterface} {wifiName}")
+        os.system(f"./lnxrouter --daemon -w 2 -p {apPass} --mac {macAddress} -g {gatewayIP} -o {relayInterface} --no-virt --ap {wifiInterface} {wifiName}")
     else:
-        os.system(f"./lnxrouter --daemon -w 2 -p {apPass} --ap {wifiInterface} {wifiName}")
+        os.system(f"./lnxrouter --daemon -w 2 -p {apPass} --mac {macAddress} -g {gatewayIP} -o {relayInterface} --ap {wifiInterface} {wifiName}")
 else:
     if noVirt  == True:
-        os.system(f"./lnxrouter --daemon -w 2 -p {apPass} --ap {wifiInterface} {wifiName}")
+        os.system(f"./lnxrouter --daemon -w 2 -p {apPass} --mac {macAddress} -g {gatewayIP} --no-virt --ap {wifiInterface} {wifiName}")
     else:
-        os.system(f"./lnxrouter --daemon -w 2 -p {apPass} --ap {wifiInterface} {wifiName}")
+        os.system(f"./lnxrouter --daemon -w 2 -p {apPass} --mac {macAddress} -g {gatewayIP} --ap {wifiInterface} {wifiName}")
 
 os.system("touch /tmp/TempAPrunning")
 print(f"\n[*] TO STOP THE AP: Run the script again with the 'stop' argument.")
