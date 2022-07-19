@@ -3,8 +3,6 @@
 
 ![logo](logo.png)
 
-**NOTE: This script is being moved from [Berate_AP](https://github.com/sensepost/berate_ap) to [Linux-router](https://github.com/garywill/linux-router)! Check out the `migrate-away-from-Berate_AP` branch to see current progress.**
-
 ## What is this script?
 
 This python script is simply a wrapper for [Linux-Router](https://github.com/garywill/linux-router). The original use case for this script was to be able to access portable Linux computers (like a laptop) over a cell phone via SSH temporarily, but there is other use cases for this, for example, an on-the-fly wireless repeater.
