@@ -170,6 +170,8 @@ GATEWAY: {gatewayIP}
 INTERFACE: {wifiInterface}
 
 MAC: {macAddress}
+
+NOVIRT: {noVirt}
 """)
 
 if relayMode == True:
