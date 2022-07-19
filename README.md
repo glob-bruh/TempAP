@@ -7,12 +7,12 @@
 
 ## What is this script?
 
-This python script is simply a wrapper for [Berate-AP](https://github.com/sensepost/berate_ap), a tool designed to deploy rouge wireless access points. The original use case for this script was to be able to access portable Linux computers (like a laptop) over a cell phone via SSH temporarily, but there is other use cases for this, for example, an on-the-fly wireless repeater.
+This python script is simply a wrapper for [Linux-Router](https://github.com/garywill/linux-router). The original use case for this script was to be able to access portable Linux computers (like a laptop) over a cell phone via SSH temporarily, but there is other use cases for this, for example, an on-the-fly wireless repeater.
 
 ## Setup:
 
 The steps to setup this script are as followed:
-1. Install openssh-server and berate-ap. You can figure out how to install these by searching "how to install openssh-server" and "how to install berate-ap".
+1. Install openssh-server. You can figure out how to install this by searching "how to install openssh-server".
 2. Make sure the TempAP script is downloaded.
 3. Run `python3 TempAP.py setup`.
 4. Make sure either your config.json file is present or you have generated one.
